@@ -1,3 +1,4 @@
+from pyexpat.errors import messages
 from flask import Flask, render_template, redirect, request, session 
 import random 
 app = Flask(__name__)
@@ -6,32 +7,34 @@ app.secret_key = "hushush"
 @app.route('/')
 def index():
     if 'totalGold' not in session:
-        session['totalGold'] = 0
-    return render_template('index.html')
+        session['totalGold'] = 0 
+        session['activity'] = ""
+    return render_template('index.html', messages=session['activity'])
 
 @app.route('/process', methods=['POST'])
 def process():
     place = request.form['building'] 
+    
     if place == 'farm': 
-        session['totalGold'] += random.randint(10,20)
+        gold = random.randint(10,20)
 
     elif place == 'cave':
-        session['totalGold'] += random.randint(5,10) 
+        gold = random.randint(5,10) 
 
     elif place == 'house':
-        session['totalGold'] += random.randint(2,5)
+        gold = random.randint(2,5)
 
     else: 
-        session['totalGold'] += random.randint(-50,50)
-    return redirect('/')
+        gold = random.randint(-50,50)
+    session['totalGold'] += gold 
 
-    # if gold >= 0:
-    #     newAlert = f"<p>Congrats! You just earned {gold} from {place}!"
-    #     session['activities'] += newAlert 
-    # elif gold <= 0: 
-    #     newAlert = f"<p>Damn..that's what happens when you go to the casino. You just lost {gold} gold.</p>"
-    #     session['activities'] += newAlert
-    # return redirect('/')
+    if gold > 0: 
+        newAlert = f"<p class=text-success style='font-family: Fredoka;'>Congrats! You just won {gold} pounds of gold from {place}!</p>"
+        session['activity'] += newAlert
+    elif gold < 0: 
+        newAlert = f"<p class=text-danger style='font-family: Fredoka;'>Oh no, that's what happens when you go the casino...You just lost {gold} pounds of gold.</p>"
+        session['activity'] += newAlert
+    return redirect('/')
 
 
 @app.route('/reset')
