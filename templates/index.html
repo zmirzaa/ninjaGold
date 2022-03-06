@@ -13,7 +13,8 @@
     <div class="container">
         <header>
             <h1>Welcome to Ninja Gold!</h1>
-            <h2>Your Gold:</h2>
+            <h4>Your Gold: {{session['totalGold']}} </h4>
+            <a href="/reset">Reset Gold</a>
         </header>
         <div class="d-flex justify-content-between">
             <div class="card bg-danger text-white ">
@@ -57,6 +58,7 @@
                 </div>
             </div>
         </div>
+        <h6>Activities:</h6>
     </div>
 </body>
 </html>
